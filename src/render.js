@@ -115,7 +115,7 @@ const byDepth = (blocks) => {
  * Conditionaly render a group if its not empty,
  * pass all the params to the renderers
  */
-const renderGroup = (group, blockRenderers, rendered, params, options) => {
+const renderGroup = (group, blockRenderers, rendered, params, options, raw) => {
   const {
     prevType: type, prevDepth: depth, prevKeys: keys, prevData: data,
   } = params;
@@ -132,7 +132,7 @@ const renderGroup = (group, blockRenderers, rendered, params, options) => {
     if (data && data.some(item => !!item)) {
       props.data = data;
     }
-    rendered.push(renderCb(group, props));
+    rendered.push(renderCb(group, props, raw));
     return;
   }
   rendered.push(group);
@@ -149,6 +149,7 @@ const renderBlocks = (
   stylesRenderer,
   entityMap = {},
   userOptions = {},
+  raw,
 ) => {
   // initialize
   const options = Object.assign({}, defaultOptions, userOptions);
@@ -189,6 +190,7 @@ const renderBlocks = (
           prevType, prevDepth, prevKeys, prevData,
         },
         options,
+        raw,
       );
       // reset group vars
       // IDEA: might be worth to group those into an instance and just newup a new one
@@ -228,6 +230,7 @@ const renderBlocks = (
       prevType, prevDepth, prevKeys, prevData,
     },
     options,
+    entityMap,
   );
   return checkJoin(rendered, options);
 };
@@ -263,5 +266,6 @@ export const render = (raw, renderers = {}, options = {}) => {
     stylesRenderer,
     raw.entityMap,
     options,
+    raw,
   );
 };
